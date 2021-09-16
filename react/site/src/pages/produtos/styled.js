@@ -324,7 +324,7 @@ const Container = styled.div`
     }
 
     .coluna-img img{
-        width: 4em;
+        width: 5em;
     }
 
     .coluna-acao > button{
