@@ -1,6 +1,8 @@
 
 import Cabecalho from '../../components/cabecalho'
 import Menu from '../../components/menu'
+import edit from '../../assets/images/edit.svg'
+import trash from '../../assets/images/trash.svg'
 import { useEffect, useState } from 'react'
 import { Container, Conteudo } from './styled'
 
@@ -10,14 +12,13 @@ const api = new Api()
 export default function Index() {
     const[produtos, setProdutos]= useState([])
     
-    console.log(produtos)
     async function listar(){
         let r = await api.listar();
         console.log(r)
         setProdutos(r)
     }
 
-    useEffect(() =>{
+    useEffect(()=>{
         listar();
     }, [])
 
@@ -101,7 +102,18 @@ export default function Index() {
                                     <th className="coluna-acao"> </th>
                                 </tr>
                             </thead>
-                    
+                            {produtos.map(item =>
+                                    <tr>
+                                        <td className="coluna-img"> <img src={item.img_produto} alt=""/> </td>
+                                        <td>{item.id_produto}</td>
+                                        <td> {item.nm_produto}</td>
+                                        <td> {item.ds_categoria}</td>
+                                        <td> {item.vl_preco_por}</td>
+                                        <td> {item.qtd_estoque}</td>
+                                        <td className="coluna-acao"> <button > <img src={edit} alt="" /> </button> </td>
+                                        <td className="coluna-acao"> <button > <img src={trash} alt="" /> </button> </td>
+                                    </tr>
+                                )}
                             <tbody>
                                 
                             </tbody> 

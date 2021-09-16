@@ -323,6 +323,10 @@ const Container = styled.div`
         width: .1em;
     }
 
+    .coluna-img img{
+        width: 4em;
+    }
+
     .coluna-acao > button{
         visibility: hidden;
         
