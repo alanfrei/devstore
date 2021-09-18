@@ -114,6 +114,7 @@ export default function Index() {
 
     return (
         <Container>
+            <ToastContainer/>
             <LoadingBar color='blue' ref={loading}/>
             <Menu />
             <Conteudo>
@@ -218,7 +219,7 @@ export default function Index() {
                         </table>
                     </div>
                 </div>
-                <ToastContainer/>
+                
             </Conteudo>
         </Container>
     )
