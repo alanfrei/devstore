@@ -136,6 +136,7 @@ const Container = styled.div`
         font-size: 18px;
         color: #615858;
         margin-right: 0.8em;
+        margin-bottom: 7em;
         font-weight: 800;
     }
 
@@ -316,7 +317,7 @@ const Container = styled.div`
     }
 
     .linha-alternada {
-        background-color: #fff;
+        background-color: #F5F5F5;
     }
 
     .coluna-acao {
@@ -324,7 +325,8 @@ const Container = styled.div`
     }
 
     .coluna-img img{
-        width: 5em;
+        width: 4em;
+        height: 4em;
     }
 
     .coluna-acao > button{

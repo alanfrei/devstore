@@ -1,9 +1,16 @@
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
+import LoadingBar from 'react-top-loading-bar'
+
+import { confirmAlert} from 'react-confirm-alert'
+import 'react-confirm-alert/src/react-confirm-alert.css'
 
 import Cabecalho from '../../components/cabecalho'
 import Menu from '../../components/menu'
 import edit from '../../assets/images/edit.svg'
 import trash from '../../assets/images/trash.svg'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Container, Conteudo } from './styled'
 
 import Api from '../../service/api'
@@ -20,11 +27,14 @@ export default function Index() {
     const[imgLink, setImgLink] = useState('')
     const[descricao, setDescricao] = useState('')
     const[idAlterando, setIdAlterando] = useState(0)
+    const loading = useRef(null)
     
     async function listar(){
+
         let r = await api.listar();
         console.log(r)
         setProdutos(r)
+        loading.current.complete();
     }
 
     const ativo = true;
@@ -32,16 +42,23 @@ export default function Index() {
 
     async function inserir(){
         if(idAlterando == 0){
-            let r = await api.inserir(nome, categoria, precoDe, precoPor, avaliacao, descricao, estoque, imgLink, ativo, data)
-            alert('produto inserido')
+            let r = await api.inserir(nome, categoria, precoDe, precoPor, avaliacao, descricao, estoque, imgLink, ativo, data);
+            if(r.erro)
+                toast.error(`${r.erro}`)
+            else
+                toast.success('produto inserido');
         }
         else{
-            let r = await api.alterar(idAlterando, nome, categoria, precoDe, precoPor, avaliacao, descricao, estoque, imgLink, ativo, data)
-            alert('produto alterado')
+            let r = await api.alterar(idAlterando, nome, categoria, precoDe, precoPor, avaliacao, descricao, estoque, imgLink, ativo, data);
+            if(r.erro)
+                toast.error(`${r.erro}`)
+            else
+                toast.success('produto alterado');
+                
         }
-
         limparCampos()
         listar()
+        
     }
 
     async function limparCampos(){
@@ -57,9 +74,27 @@ export default function Index() {
     }
 
     async function remover(id) {
-        let r = await api.remover(id)
-        alert('produto removido')
-        listar()
+        confirmAlert({
+            title: 'Remover produto',
+            message: `Tem certeza de que deseja remover o produto ${id}`,
+            buttons:[
+                {
+                    label: 'Sim',
+                    onClick: async () => {
+                        let r = await api.remover(id)
+                        if(r.erro)
+                            toast.error(`${r.erro}`)
+                        else
+                            toast.warn('produto removido')
+                        listar()
+                    }
+                  },
+                  {
+                    label: 'Não',
+                  }
+            ]
+        })
+        
     }
     async function alterar(item){
         setNome(item.nm_produto)
@@ -79,6 +114,7 @@ export default function Index() {
 
     return (
         <Container>
+            <LoadingBar color='blue' ref={loading}/>
             <Menu />
             <Conteudo>
                 <Cabecalho />
@@ -87,7 +123,7 @@ export default function Index() {
                         
                         <div className="text-new-product">
                             <div className="bar-new-product"></div>
-                            <div className="text-new-product">Novo Produto</div>
+                            <div className="text-new-product">{idAlterando == 0 ? "Novo Produto" : "Alterarando Produto " + idAlterando}</div>
                         </div>
                         
                         <div className="input-new-product"> 
@@ -131,7 +167,8 @@ export default function Index() {
                             <div className="agp-input">
                                 <div className="desc-product"> Descrição: </div>  
                                 <div className="input"> <textarea type="text" value={descricao} onChange={ e => setDescricao(e.target.value)} /> </div> 
-                                <div className="button-create"> <button onClick={inserir}>Cadastrar</button> </div>
+                                <div className="button-create"> <button onClick={inserir}> {idAlterando == 0 ? "Cadastrar" : "Alterar"} </button> </div>
+                                
                             </div>
                         </div>
                         
@@ -157,12 +194,18 @@ export default function Index() {
                                     <th className="coluna-acao"> </th>
                                 </tr>
                             </thead>
-                            {produtos.map(item =>
-                                    <tr>
+                            {produtos.map((item, i) =>
+                                    <tr className={i % 2 == 0 ? "" : "linha-alternada"}>
                                         <td className="coluna-img"> <img src={item.img_produto} alt=""/> </td>
-                                        <td>{item.id_produto}</td>
-                                        <td> {item.nm_produto}</td>
-                                        <td> {item.ds_categoria}</td>
+                                        <td>{item.id_produto }</td>
+                                        <td title={item.nm_produto}> 
+                                            {item.nm_produto != null && item.nm_produto.length >= 14 
+                                                ? item.nm_produto.substring(0,14) + "..."
+                                                : item.nm_produto}</td>
+                                        <td title={item.ds_categoria}> 
+                                            {item.ds_categoria != null && item.ds_categoria.length >= 14 
+                                                ? item.ds_categoria.substring(0,14) + "..."
+                                                : item.ds_categoria}</td>
                                         <td> {item.vl_preco_por}</td>
                                         <td> {item.qtd_estoque}</td>
                                         <td className="coluna-acao"> <button onClick={() => alterar(item)} > <img src={edit} alt="" /> </button> </td>
@@ -175,6 +218,7 @@ export default function Index() {
                         </table>
                     </div>
                 </div>
+                <ToastContainer/>
             </Conteudo>
         </Container>
     )
