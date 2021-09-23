@@ -41,7 +41,7 @@ export default function Index() {
     const data = new Date();
 
     async function inserir(){
-        if(idAlterando === 0){
+        if(idAlterando == 0){
             let r = await api.inserir(nome, categoria, precoDe, precoPor, avaliacao, descricao, estoque, imgLink, ativo, data);
             if(r.erro)
                 toast.error(`${r.erro}`)
@@ -124,7 +124,7 @@ export default function Index() {
                         
                         <div className="text-new-product">
                             <div className="bar-new-product"></div>
-                            <div className="text-new-product">{idAlterando === 0 ? "Novo Produto" : "Alterarando Produto " + idAlterando}</div>
+                            <div className="text-new-product">{idAlterando == 0 ? "Novo Produto" : "Alterarando Produto " + idAlterando}</div>
                         </div>
                         
                         <div className="input-new-product"> 
@@ -168,7 +168,7 @@ export default function Index() {
                             <div className="agp-input">
                                 <div className="desc-product"> Descrição: </div>  
                                 <div className="input"> <textarea type="text" value={descricao} onChange={ e => setDescricao(e.target.value)} /> </div> 
-                                <div className="button-create"> <button onClick={inserir}> {idAlterando === 0 ? "Cadastrar" : "Alterar"} </button> </div>
+                                <div className="button-create"> <button onClick={inserir}> {idAlterando == 0 ? "Cadastrar" : "Alterar"} </button> </div>
                                 
                             </div>
                         </div>
@@ -196,7 +196,7 @@ export default function Index() {
                                 </tr>
                             </thead>
                             {produtos.map((item, i) =>
-                                    <tr className={i % 2 === 0 ? "" : "linha-alternada"}>
+                                    <tr className={i % 2 == 0 ? "" : "linha-alternada"}>
                                         <td className="coluna-img"> <img src={item.img_produto} alt=""/> </td>
                                         <td>{item.id_produto }</td>
                                         <td title={item.nm_produto}> 
